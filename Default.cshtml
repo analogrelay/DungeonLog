@@ -1,4 +1,5 @@
 ﻿@{
+    Layout = "~/Layout/_Master.cshtml";
 }
 
 <!DOCTYPE html>
@@ -9,6 +10,17 @@
         <title>Dungeon Log</title>
     </head>
     <body>
-        
+        <nav id="header">
+            @if(Request.IsAuthenticated) {
+                @:Welcome, @WebSecurity.CurrentUserName
+            } else {
+                @:Login:
+                <ul>
+                    <li><a href="~/Account/Login/WindowsLive" title="Login with Windows Live"><img src="~/Images/windowsLive.png" alt="Login with Windows Live"></a></li>
+                    <li><a href="~/Account/Login/Twitter" title="Login with Twitter"><img src="~/Images/twitter.png" alt="Login with Twitter"></a></li>
+                    <li><a href="~/Account/Login/Facebook" title="Login with Facebook"><img src="~/Images/facebook.png" alt="Login with Facebook"></a></li>
+                </ul>
+            }
+        </nav>
     </body>
 </html>

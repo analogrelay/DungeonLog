@@ -1,0 +1,9 @@
+﻿@{
+    switch(UrlData[0].ToString().ToLowerInvariant()) {
+        case "windowslive":
+            OAuthWebSecurity.RequestAuthentication("windowsLive", "~/Account/Land/WindowsLive");
+            break;
+    }
+
+    Response.StatusCode = 404;
+}

@@ -1,0 +1,69 @@
+﻿@{
+    Layout = "~/Layout/_Master.cshtml";
+
+    Validation.RequireField("email", "E-Mail Address is required");
+    Validation.RequireField("username", "Username is required");
+    Validation.Add("email", Validator.Regex("[^@]*@[^@]*", "Email is invalid. Please enter a valid email address"));
+
+    string provider = null;
+    string userId = null;
+    if(!IsPost) {
+        // Coming from OAuth, check for account and if there already is one, redirect away
+        // No account? We'll continue and render the form to create or link an account.
+        var result = OAuthWebSecurity.VerifyAuthentication();
+        provider = result.Provider;
+        userId = result.ProviderUserId;
+        if(result.IsSuccessful) {
+            bool registered = OAuthWebSecurity.Login(provider, userId);
+            if(registered) {
+                var returnUrl = Request.QueryString["ReturnUrl"];
+                if (returnUrl.IsEmpty()) {
+                    Response.Redirect("~/");
+                } else {
+                    Context.RedirectLocal(returnUrl);
+                }
+            }
+        } else {
+            Response.Redirect("~/Account/LoginError");
+        }
+    } else {
+        // Create a new user in the database
+        var db = Database.Open("StarterSite");
+        var userName = Request.Form["userName"];
+        var email = Request.Form["email"];
+        provider = Request.Form["provider"];
+        userId = Request.Form["userid"];
+
+        // Check for this user by name
+        var user = db.QuerySingle("SELECT UserName FROM UserProfile WHERE LOWER(UserName) = LOWER(@0)", userName);
+        if(user == null) {
+            // User does not exist, create it
+            db.Execute("INSERT INTO UserProfile (UserName, Email) VALUES (@0, @1)", userName, email);
+
+            // Now attach it to the account and do the redirect
+            OAuthWebSecurity.CreateOrUpdateAccount(provider, userId, userName);
+            OAuthWebSecurity.Login(provider, userId);
+            var returnUrl = Request.QueryString["ReturnUrl"];
+            if (returnUrl.IsEmpty()) {
+                Response.Redirect("~/");
+            } else {
+                Context.RedirectLocal(returnUrl);
+            }
+        } else {
+            // User already exists
+            ModelState.AddError("userName", "User name already exists. Please enter a different name.");
+        }
+    }
+}
+<form method="POST">
+    <fieldset>
+        <legend>Create your account now!</legend>
+        <ul>
+            <li>Username: <input name="userName" id="userName" /></li>
+            <li>E-Mail Address: <input type="email" name="email" id="email" /></li>
+            <li><input type="submit" value="Register" /></li>
+        </ul>
+    </fieldset>
+    <input type="hidden" name="provider" id="provider" value="provider">
+    <input type="hidden" name="userid" id="userid" value="userId">
+</form>
