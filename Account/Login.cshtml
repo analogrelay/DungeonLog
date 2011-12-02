@@ -1,10 +1,13 @@
 ﻿@{
     switch(UrlData[0].ToString().ToLowerInvariant()) {
         case "windowslive":
-            OAuthWebSecurity.RequestAuthentication("windowsLive", "~/Account/Land/WindowsLive");
+            OAuthWebSecurity.RequestAuthentication("windowsLive", "~/Account/Land");
             break;
         case "facebook":
-            OAuthWebSecurity.RequestAuthentication("facebook", "~/Account/Land/Facebook");
+            OAuthWebSecurity.RequestAuthentication("facebook", "~/Account/Land");
+            break;
+        case "twitter":
+            OAuthWebSecurity.RequestAuthentication("twitter", "~/Account/Land");
             break;
     }
 

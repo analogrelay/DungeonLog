@@ -4,8 +4,15 @@
     <head>
         <meta charset="utf-8" />
         <title>DungeonLog - @Page.Title</title>
+        <link rel="stylesheet" type="text/css" href="~/Styles/Site.css">
     </head>
     <body>
-        @RenderBody()
+        <section id="header">
+            <h1><a href="~/">DungeonLog</a></h1>
+            @RenderSection("header", required: false)
+        </section>
+        <section id="body">
+            @RenderBody()
+        </section>
     </body>
 </html>

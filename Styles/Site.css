@@ -1,0 +1,136 @@
+@import url(http://fonts.googleapis.com/css?family=MedievalSharp);
+
+html {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Verdana, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+section#body {
+    padding: 0 0.5em 0 0.5em;
+}
+
+section#header {
+    margin: 0;
+    padding: 0.5em;
+    top: 0;
+    width: 100%;
+    background-color: rgb(226, 226, 226);
+}
+
+section#header h1 {
+    display: inline;
+}
+
+section#header section {
+    display: inline;
+    float: right;
+}
+
+section#header nav {
+    display: inline;
+    float: right;
+    margin-right: -10px;
+    padding-right: 5px;
+    border-right: dotted grey 1px;
+}
+
+section#header nav ul {
+    margin: 0;
+    padding: 0;
+}
+
+section#header nav ul li {
+    display: inline;
+    list-style-type: none;
+}
+
+section#header a {
+    font-size: smaller;
+    text-decoration: none;
+    color: #808080;
+}
+
+section#header nav a:hover {
+    text-decoration: none;
+    color: black;
+}
+
+section#header ul li a img {
+    top: 7px;
+    position: relative;
+    border: none;
+}
+
+section#login {
+    margin-right: 1em;
+    margin-left: 1em;
+    padding:0;
+}
+
+section#login ul {
+    top: -5px;
+    position: relative;
+}
+
+section#login span#login_label {
+    top: -5px;
+    position: relative;
+}
+
+ul.oauth_providerbar {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+ul.oauth_providerbar li {
+    display: inline;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 18pt;
+}
+
+section#header h1 a {
+    font-size: 18pt;
+    color: black;
+}
+
+h2 {
+    font-size: 16pt;
+    font-family: 'MedievalSharp', cursive;
+}
+
+/* Forms */
+form {
+    background-color: rgb(238, 238, 238);
+    margin: 0; padding: 0;
+}
+
+form ul {
+    margin: 0; padding: 0;
+    margin-left: 0.5em;
+}
+
+form ul li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Form Elements */
+input {
+    border: solid black 1px;
+    margin: 0.25em;
+    padding: 0.25em;
+}

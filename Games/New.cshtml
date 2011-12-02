@@ -1,0 +1,11 @@
+﻿@{
+    Page.Title = "Create a new Game";
+}
+<h2>Create a new Game</h2>
+<form method="post">
+    <ul>
+        <li><span class="form_label">Name:</span> <input name="name" id="name" /> @Html.ValidationMessage("name")</li>
+        <li>Note: You will be registered as a DM on this game. You can edit this later</li>
+        <li><input type="submit" name="submit" id="submit" /></li>
+    </ul>
+</form>

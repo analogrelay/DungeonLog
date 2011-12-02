@@ -1,6 +1,6 @@
 ﻿@{
-    WebSecurity.InitializeDatabaseConnection("DungeonLog", "UserProfile", "UserId", "UserName", autoCreateTables: true);
+    WebSecurity.InitializeDatabaseConnection("DungeonLog", "Users", "Id", "UserName", autoCreateTables: true);
     OAuthWebSecurity.RegisterOAuthClient(BuiltInOAuthClient.WindowsLive, "000000004C06E927", "aKPaJ4L2fsWAeZSS4O-NAxKzAJDsS-GX");
     OAuthWebSecurity.RegisterOAuthClient(BuiltInOAuthClient.Facebook, "121252804655856", "aaad6ad1fd85fb4a5201001e4a0f991f");
-    //OAuthWebSecurity.RegisterOAuthClient(BuiltInOAuthClient.Twitter, "BLfzpbNFyx7feejEzC9P5g", "I7qsY085WJUjIyRnoL5YIq2RDd2qojhjf4IEY6Kh30");
+    OAuthWebSecurity.RegisterOAuthClient(BuiltInOAuthClient.Twitter, "BLfzpbNFyx7feejEzC9P5g", "I7qsY085WJUjIyRnoL5YIq2RDd2qojhjf4IEY6Kh30");
 }

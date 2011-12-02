@@ -22,6 +22,9 @@
                 } else {
                     Context.RedirectLocal(returnUrl);
                 }
+            } else if(Request.IsAuthenticated) {
+                // Add this account to the logged in user.
+                OAuthWebSecurity.CreateOrUpdateAccount(provider, userId, WebSecurity.CurrentUserName);
             }
         } else {
             Response.Redirect("~/Account/LoginError");
@@ -35,10 +38,10 @@
         userId = Request.Form["userid"];
 
         // Check for this user by name
-        var user = db.QuerySingle("SELECT UserName FROM UserProfile WHERE LOWER(UserName) = LOWER(@0)", userName);
+        var user = db.QuerySingle("SELECT UserName FROM Users WHERE LOWER(UserName) = LOWER(@0)", userName);
         if(user == null) {
             // User does not exist, create it
-            db.Execute("INSERT INTO UserProfile (UserName, Email) VALUES (@0, @1)", userName, email);
+            db.Execute("INSERT INTO Users (UserName, Email) VALUES (@0, @1)", userName, email);
 
             // Now attach it to the account and do the redirect
             OAuthWebSecurity.CreateOrUpdateAccount(provider, userId, userName);
@@ -59,8 +62,8 @@
     <fieldset>
         <legend>Create your account now!</legend>
         <ul>
-            <li>Username: <input name="userName" id="userName" /></li>
-            <li>E-Mail Address: <input type="email" name="email" id="email" /></li>
+            <li>Username: <input name="userName" id="userName" />@Html.ValidationMessage("userName")</li>
+            <li>E-Mail Address: <input type="email" name="email" id="email" />@Html.ValidationMessage("email")</li>
             <li><input type="submit" value="Register" /></li>
         </ul>
     </fieldset>

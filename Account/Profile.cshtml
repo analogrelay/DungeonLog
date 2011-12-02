@@ -9,7 +9,19 @@
     <p>Below is a list of accounts you can use to log in. Use the buttons to remove one or add a new one. You cannot remove your last account without deleting your profile.</p>
     <ul>
         @foreach(OAuthAccount account in accounts) {
-            <li>@account.Provider</li>
+            <li><a class="removeButton img_@(account.Provider)" href="~/Accounts/Remove/@account.Provider">Remove</a> - @account.Provider</li>
+        }
+    </ul>
+    <p>Want to add another account that you can use to log in? Click one of the icons below.</p>
+    <ul class="oauth_providerbar">
+        @if(!accounts.Any(a => String.Equals(a.Provider, "windowslive", StringComparison.OrdinalIgnoreCase))) {
+            <li><a href="~/Account/Login/WindowsLive" title="Add a Windows Live account"><img src="~/Images/windowsLive.png" alt="Add a Windows Live account"></a></li>
+        }
+        @if(!accounts.Any(a => String.Equals(a.Provider, "twitter", StringComparison.OrdinalIgnoreCase))) {
+            <li><a href="~/Account/Login/Twitter" title="Add a Twitter account"><img src="~/Images/twitter.png" alt="Add a Twitter account"></a></li>
+        }
+        @if(!accounts.Any(a => String.Equals(a.Provider, "facebook", StringComparison.OrdinalIgnoreCase))) {
+            <li><a href="~/Account/Login/Facebook" title="Add a Facebook account"><img src="~/Images/facebook.png" alt="Add a Facebook account"></a></li>
         }
     </ul>
 </section>
