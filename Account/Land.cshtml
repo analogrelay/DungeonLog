@@ -14,7 +14,7 @@
         provider = result.Provider;
         userId = result.ProviderUserId;
         if(result.IsSuccessful) {
-            bool registered = OAuthWebSecurity.Login(provider, userId);
+            bool registered = OAuthWebSecurity.Login(provider, userId, createPersistentCookie: true);
             if(registered) {
                 var returnUrl = Request.QueryString["ReturnUrl"];
                 if (returnUrl.IsEmpty()) {
@@ -28,7 +28,7 @@
         }
     } else {
         // Create a new user in the database
-        var db = Database.Open("StarterSite");
+        var db = Database.Open("DungeonLog");
         var userName = Request.Form["userName"];
         var email = Request.Form["email"];
         provider = Request.Form["provider"];
@@ -42,7 +42,7 @@
 
             // Now attach it to the account and do the redirect
             OAuthWebSecurity.CreateOrUpdateAccount(provider, userId, userName);
-            OAuthWebSecurity.Login(provider, userId);
+            OAuthWebSecurity.Login(provider, userId, createPersistentCookie: true);
             var returnUrl = Request.QueryString["ReturnUrl"];
             if (returnUrl.IsEmpty()) {
                 Response.Redirect("~/");
@@ -64,6 +64,6 @@
             <li><input type="submit" value="Register" /></li>
         </ul>
     </fieldset>
-    <input type="hidden" name="provider" id="provider" value="provider">
-    <input type="hidden" name="userid" id="userid" value="userId">
+    <input type="hidden" name="provider" id="provider" value="@provider">
+    <input type="hidden" name="userid" id="userid" value="@userId">
 </form>

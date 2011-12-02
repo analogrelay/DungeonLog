@@ -3,6 +3,9 @@
         case "windowslive":
             OAuthWebSecurity.RequestAuthentication("windowsLive", "~/Account/Land/WindowsLive");
             break;
+        case "facebook":
+            OAuthWebSecurity.RequestAuthentication("facebook", "~/Account/Land/Facebook");
+            break;
     }
 
     Response.StatusCode = 404;
