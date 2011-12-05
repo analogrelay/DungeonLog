@@ -10,6 +10,14 @@
             OAuthWebSecurity.RequestAuthentication("twitter", "~/Account/Land");
             break;
     }
-
-    Response.StatusCode = 404;
 }
+<h1>Login</h1>
+<p>
+    You need to login to access most of this site's contents. Rather than requiring you to create yet another account, 
+    DungeonLog uses your accounts with other services. We will never use these accounts to post on your behalf without
+    making it very clear to you. Better yet, we never get your password and you can revoke our access to your account
+    at any time from the provider's settings interface!
+</p>
+<p>Select a provider to login with:</p>
+@{Session["ReturnUrl"] = Request.QueryString["ReturnUrl"];}
+@RenderPage("~/Shared/_ProviderBar.cshtml", new { ShowName = true })

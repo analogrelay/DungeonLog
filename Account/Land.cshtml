@@ -16,8 +16,8 @@
         if(result.IsSuccessful) {
             bool registered = OAuthWebSecurity.Login(provider, userId, createPersistentCookie: true);
             if(registered) {
-                var returnUrl = Request.QueryString["ReturnUrl"];
-                if (returnUrl.IsEmpty()) {
+                string returnUrl = Session["ReturnUrl"] as string;
+                if (returnUrl == null) {
                     Response.Redirect("~/");
                 } else {
                     Context.RedirectLocal(returnUrl);

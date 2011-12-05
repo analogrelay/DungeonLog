@@ -1,0 +1,23 @@
+﻿@{
+    Layout = "~/Shared/_Master.cshtml";
+}
+@section header {
+    <section id="login">
+        @if(Request.IsAuthenticated) {
+            <span>Welcome, <a href="~/Account/Profile">@WebSecurity.CurrentUserName</a>. <a href="~/Account/Logout">Logout?</a></span>
+        } else {
+            <span id="login_label">Login:</span>
+            @RenderPage("~/Shared/_ProviderBar.cshtml")
+        }
+    </section>
+    @{
+        if(Request.IsAuthenticated) {
+            <nav>
+                <ul>
+                    <li><a href="~/Games" title="My Games">MY GAMES</a></li>
+                </ul>
+            </nav>
+        }
+    }
+}
+@RenderBody()

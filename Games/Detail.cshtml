@@ -1,0 +1,41 @@
+﻿@{
+    WebSecurity.RequireAuthenticatedUser();
+
+    Database db = Database.Open("DungeonLog");
+    var game = db.QuerySingle("SELECT * FROM Games WHERE Id = @0", UrlData[0].AsInt());
+    if(game == null) {
+        Response.StatusCode = 404;
+        Response.End();
+    }
+
+    // Check permissions
+    GamePermission perm = Permissions.GetGamePermission(game);
+
+    if(perm == GamePermission.None) {
+        Response.StatusCode = 404;
+        Response.End();
+    }
+}
+<h2>@game.Name</h2>
+<h3>Dungeon Masters</h3>
+<ul>
+    @foreach(var dm in db.Query("SELECT users.* FROM DungeonMasters AS dm INNER JOIN Users users ON dm.UserId = users.Id WHERE dm.GameId = @0", game.Id)) {
+        <li><a href="~/User/Profile/@dm.Id">@dm.UserName</a></li>
+    }
+</ul>
+<h3>Players</h3>
+<ul>
+    @foreach(var player in db.Query("SELECT p.Id As PlayerId, p.Name, users.Id as UserId, users.Username FROM Players AS p INNER JOIN Users users ON p.UserId = users.Id WHERE p.GameId = @0", game.Id)) {
+        <li>
+            <a href="~/User/Profile/@player.UserId">@player.Username</a> is <a href="~/Players/Detail/@player.PlayerId">@player.Name</a>
+        </li>
+    }
+</ul>
+<h3>Non-Player Characters</h3>
+<ul>
+    @foreach(var player in db.Query("SELECT * FROM Players WHERE GameId = @0 AND UserId IS NULL", game.Id)) {
+        <li>
+            <a href="~/Players/Detail/@player.Id">@player.Name</a>
+        </li>
+    }
+</ul>

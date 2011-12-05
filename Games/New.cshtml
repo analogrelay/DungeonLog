@@ -1,11 +1,28 @@
 ﻿@{
+    WebSecurity.RequireAuthenticatedUser();
+
     Page.Title = "Create a new Game";
+    Validation.Add("name", Validator.Required("Name is a required field"));
+
+    if(IsPost && Validation.IsValid()) {
+        // Create the game and get it's ID
+        Database db = Database.Open("DungeonLog");
+        db.Execute("INSERT INTO Games(Name, OwnerUserId) VALUES(@0, @1)", Request.Form["name"], WebSecurity.CurrentUserId);
+        int gameId = (int)db.GetLastInsertId();
+
+        // Add the current user as a DM. 
+        // It's ok if this fails since we've already marked the player as an owner (otherwise we'd be doing this in a transaction)
+        db.Execute("INSERT INTO DungeonMasters(GameId, UserId) VALUES(@0, @1)", gameId, WebSecurity.CurrentUserId);
+
+        // Redirect to the game's home page
+        Response.Redirect("~/Games/Detail" + gameId);
+    }
 }
 <h2>Create a new Game</h2>
 <form method="post">
     <ul>
         <li><span class="form_label">Name:</span> <input name="name" id="name" /> @Html.ValidationMessage("name")</li>
-        <li>Note: You will be registered as a DM on this game. You can edit this later</li>
+        <li>Note: You will be registered as a DM on this game. You can edit this later.</li>
         <li><input type="submit" name="submit" id="submit" /></li>
     </ul>
 </form>

@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>DungeonLog - @Page.Title</title>
+        <link rel="stylesheet" type="text/css" href="~/Content/Site.css">
+        <link rel="stylesheet" type="text/css" href="~/Content/themes/base/jquery.ui.all.css">
+        <script src="~/Scripts/jquery-1.4.4.min.js" type="text/javascript"></script>
+        <script src="~/Scripts/jquery-ui-1.8.16.min.js" type="text/javascript"></script>
+        <script src="~/Scripts/DungeonLog.core.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <section id="header">
+            <h1><a href="~/">DungeonLog</a></h1>
+            @RenderSection("header", required: false)
+        </section>
+        <section id="body">
+            @RenderBody()
+        </section>
+    </body>
+</html>

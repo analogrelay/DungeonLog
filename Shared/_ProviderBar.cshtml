@@ -1,0 +1,28 @@
+﻿@{
+    string linkFormat = Page.LinkFormat;
+    if(linkFormat == null) {
+        linkFormat = "~/Account/Login/{0}";
+    }
+
+    string displayNameFormat = Page.DisplayNameFormat;
+    if(displayNameFormat == null) {
+        displayNameFormat = "Login with {0}";
+    }
+    
+    bool showName = Page.ShowName ?? false;
+}
+
+<ul class="oauth_providerbar @(showName ? "vert" : null)">
+    @foreach(OAuthProvider provider in App.OAuthProviders) {
+        string url = String.Format(linkFormat, provider.Name);
+        string title = String.Format(displayNameFormat, provider.DisplayName);
+        <li>
+            <a class="oauth_provider_@provider.Name" href="@Href(url)" title="@title">
+                <img src="@Href(provider.ImageUrl)" alt="@title"/>
+                @if(showName) {
+                    @provider.DisplayName
+                }
+            </a>
+        </li>
+    }
+</ul>

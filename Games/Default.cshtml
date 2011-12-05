@@ -1,13 +1,13 @@
 ﻿@{
+    WebSecurity.RequireAuthenticatedUser();
+
     Page.Title = "My Games";
-    IEnumerable<dynamic> games = new object[] {
-        new { Name = "AmpxDnD", Id = 42 },
-        new { Name = "BelltownDnD", Id = 24 }
-    };
+    Database db = Database.Open("DungeonLog");
+    var ownedGames = db.Query("SELECT * FROM Games WHERE OwnerUserId = @0", WebSecurity.CurrentUserId);
 }
-<h2>My Games</h2>
+<h2>Games I run</h2>
 <ul id="gameslist">
-    @foreach(var game in games) {
+    @foreach(var game in ownedGames) {
         <li><a href="~/Games/Detail/@game.Id" title="@game.Name">@game.Name</a></li>
     }
 </ul>
