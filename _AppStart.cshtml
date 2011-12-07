@@ -4,9 +4,9 @@
     OAuthWebSecurity.RegisterOAuthClient(BuiltInOAuthClient.Facebook, "121252804655856", "aaad6ad1fd85fb4a5201001e4a0f991f");
     OAuthWebSecurity.RegisterOAuthClient(BuiltInOAuthClient.Twitter, "BLfzpbNFyx7feejEzC9P5g", "I7qsY085WJUjIyRnoL5YIq2RDd2qojhjf4IEY6Kh30");
 
-    App.OAuthProviders = new [] {
-        new OAuthProvider(name: "WindowsLive", displayName: "Windows Live", imageUrl: "~/Content/Images/windowsLive.png"),
-        new OAuthProvider(name: "Facebook", displayName: "Facebook", imageUrl: "~/Content/Images/facebook.png"),
-        new OAuthProvider(name: "Twitter", displayName: "Twitter", imageUrl: "~/Content/Images/twitter.png")
+    App.AuthProviders = new [] {
+        new AuthProvider(name: "WindowsLive", displayName: "Windows Live", imageUrl: "~/Content/Images/windowsLive.png"),
+        new AuthProvider(name: "Facebook", displayName: "Facebook", imageUrl: "~/Content/Images/facebook.png"),
+        new AuthProvider(name: "Twitter", displayName: "Twitter", imageUrl: "~/Content/Images/twitter.png")
     };
 }

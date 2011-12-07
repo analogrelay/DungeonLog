@@ -1,0 +1,62 @@
+﻿@{
+    Validation.RequireField("name");
+    
+    if (UrlData[0].IsEmpty() || UrlData[1].IsEmpty() || !UrlData[1].IsInt())
+    {
+        Response.SetStatus(HttpStatusCode.NotFound);
+    }
+
+    bool isPC = String.Equals(UrlData[0], "PC", StringComparison.OrdinalIgnoreCase);
+    if(!isPC && !String.Equals(UrlData[0], "NPC", StringComparison.OrdinalIgnoreCase)) {
+        // Wasn't PC or NPC
+        Response.SetStatus(HttpStatusCode.NotFound);
+    }
+    
+    if(isPC) {
+        Validation.RequireField("username");
+    }
+    
+    var db = Database.Open("DungeonLog");
+    var game = db.QuerySingle("SELECT * FROM Games WHERE Id = @0", UrlData[1].AsInt());
+    
+    if(game == null) {
+        Response.SetStatus(HttpStatusCode.NotFound);
+    }
+    Permissions.RequireAtLeast(game, GamePermission.Player);
+
+    string title = "Add a " + (isPC ? "Player Character" : "Non-Player Character") + " to " + game.Name;
+    Page.Title = title;
+
+    Permissions.RequireAtLeast(game, GamePermission.Player);
+    
+    if(IsPost && Validation.IsValid()) {
+        // Get the user ID for the player
+        int? userId = null;
+        bool cont = true;
+        if(isPC) {
+            var user = db.QuerySingle("SELECT * FROM Users WHERE Username = @0", Request.Form["username"]);
+        
+            if(user == null) {
+                ModelState.AddError("username", "User does not exist");
+                cont = false;
+            } else {
+                userId = user.Id;
+            }
+        }
+        if(cont) {
+            db.Execute("INSERT INTO Players(GameId, UserId, Name) VALUES(@0, @1, @2)", game.Id, userId, Request.Form["name"]);
+            Response.Redirect("~/Players/Detail/" + db.GetLastInsertId());
+        }
+    }
+}
+<h2>@title</h2>
+<form method="post">
+    <ul>
+        <li>Name: <input name="name" id="name" @Validation.For("name") />@Html.ValidationMessage("name")</li>
+        @if (isPC)
+        {
+            <li>Player Username: <input name="username" id="username" @Validation.For("username") />@Html.ValidationMessage("username")</li>
+        }
+        <li><input type="submit" value="Add @(isPC ? "PC" : "NPC")" /></li>
+    </ul>
+</form>

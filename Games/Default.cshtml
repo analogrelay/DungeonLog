@@ -4,11 +4,18 @@
     Page.Title = "My Games";
     Database db = Database.Open("DungeonLog");
     var ownedGames = db.Query("SELECT * FROM Games WHERE OwnerUserId = @0", WebSecurity.CurrentUserId);
+    var memberGames = db.Query("SELECT DISTINCT(g.Id), g.Name FROM Games g LEFT OUTER JOIN Players p ON p.GameId = g.Id LEFT OUTER JOIN DungeonMasters dm ON dm.GameId = g.Id WHERE p.UserId = @0 OR dm.UserId = @0", WebSecurity.CurrentUserId);
 }
 <h2>Games I run</h2>
-<ul id="gameslist">
+<ul>
     @foreach(var game in ownedGames) {
         <li><a href="~/Games/Detail/@game.Id" title="@game.Name">@game.Name</a></li>
     }
 </ul>
-<a href="~/Games/New" title="Start a new game">Start a new game!</a>
+<a class="button large" data-icon="document" data-text="on" href="~/Games/New" title="Start a new game">Start a new game!</a>
+<h2>Games I participate in</h2>
+<ul>
+    @foreach(var game in memberGames) {
+        <li><a href="~/Games/Detail/@game.Id" title="@game.Name">@game.Name</a></li>
+    }
+</ul>

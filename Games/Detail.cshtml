@@ -1,41 +1,63 @@
 ﻿@{
+    if(!UrlData[0].IsInt()) {
+        Response.SetStatus(HttpStatusCode.NotFound);
+    }
+    
     WebSecurity.RequireAuthenticatedUser();
 
     Database db = Database.Open("DungeonLog");
     var game = db.QuerySingle("SELECT * FROM Games WHERE Id = @0", UrlData[0].AsInt());
     if(game == null) {
-        Response.StatusCode = 404;
-        Response.End();
+        Response.SetStatus(HttpStatusCode.NotFound);
     }
 
     // Check permissions
     GamePermission perm = Permissions.GetGamePermission(game);
 
-    if(perm == GamePermission.None) {
-        Response.StatusCode = 404;
-        Response.End();
-    }
+    Permissions.RequireAtLeast(perm, GamePermission.Player);
+
+    var owner = db.QuerySingle("SELECT * FROM Users WHERE Id = @0", game.OwnerUserId);
+    var dms = db.Query("SELECT users.* FROM DungeonMasters AS dm INNER JOIN Users users ON dm.UserId = users.Id WHERE dm.GameId = @0", game.Id);
 }
 <h2>@game.Name</h2>
+<p>Owner: <a href="~/User/Profile/@owner.Id">@owner.UserName</a>@if(perm == GamePermission.Owner) { <text><a class="button largebutton" href="~/Games/Edit/@game.Id">Change...</a></text> }</p>
 <h3>Dungeon Masters</h3>
 <ul>
-    @foreach(var dm in db.Query("SELECT users.* FROM DungeonMasters AS dm INNER JOIN Users users ON dm.UserId = users.Id WHERE dm.GameId = @0", game.Id)) {
-        <li><a href="~/User/Profile/@dm.Id">@dm.UserName</a></li>
+    @foreach(var dm in dms) {
+        <li>
+            @if (dms.Count > 1 && Permissions.IsAtLeast(perm, GamePermission.DM))
+            {
+                <a class="button iconbutton" data-icon="circle-close" href="~/DMs/Remove/@dm.Id">Delete</a>
+            }
+            <a href="~/Users/Profile/@dm.Id">@dm.UserName</a>
+        </li>
     }
 </ul>
-<h3>Players</h3>
+@if (Permissions.IsAtLeast(perm, GamePermission.DM))
+{
+    <a class="button largebutton" data-icon="circle-plus" data-text="on" href="~/DMs/New/@game.Id" title="Add a Dungeon Master">Add a DM</a>
+}
+else
+{
+    <p class="message">Sorry, only DMs or the game owner can add other DMs.</p>
+}
+<h3>Player Characters</h3>
 <ul>
-    @foreach(var player in db.Query("SELECT p.Id As PlayerId, p.Name, users.Id as UserId, users.Username FROM Players AS p INNER JOIN Users users ON p.UserId = users.Id WHERE p.GameId = @0", game.Id)) {
+    @foreach (var player in db.Query("SELECT p.Id As PlayerId, p.Name, users.Id as UserId, users.Username FROM Players AS p INNER JOIN Users users ON p.UserId = users.Id WHERE p.GameId = @0", game.Id))
+    {
         <li>
             <a href="~/User/Profile/@player.UserId">@player.Username</a> is <a href="~/Players/Detail/@player.PlayerId">@player.Name</a>
         </li>
     }
 </ul>
+<a class="button largebutton" data-icon="circle-plus" data-text="on" href="~/Players/Add/PC/@game.Id">Add a player character</a>
 <h3>Non-Player Characters</h3>
 <ul>
-    @foreach(var player in db.Query("SELECT * FROM Players WHERE GameId = @0 AND UserId IS NULL", game.Id)) {
+    @foreach (var player in db.Query("SELECT * FROM Players WHERE GameId = @0 AND UserId IS NULL", game.Id))
+    {
         <li>
             <a href="~/Players/Detail/@player.Id">@player.Name</a>
         </li>
     }
 </ul>
+<a class="button largebutton" data-icon="circle-plus" data-text="on" href="~/Players/Add/NPC/@game.Id">Add an NPC</a>

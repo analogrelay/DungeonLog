@@ -13,7 +13,7 @@
 }
 
 <ul class="oauth_providerbar @(showName ? "vert" : null)">
-    @foreach(OAuthProvider provider in App.OAuthProviders) {
+    @foreach(AuthProvider provider in App.AuthProviders) {
         string url = String.Format(linkFormat, provider.Name);
         string title = String.Format(displayNameFormat, provider.DisplayName);
         <li>

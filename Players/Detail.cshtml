@@ -1,0 +1,35 @@
+﻿@{
+    if(UrlData[0].IsEmpty() || !UrlData[0].IsInt()) {
+        Response.StatusCode = 404;
+        Response.End();
+    }
+    var db = Database.Open("DungeonLog");
+    var player = db.QuerySingle("SELECT players.*, users.UserName FROM Players players LEFT OUTER JOIN Users users ON players.UserId = users.Id WHERE players.Id = @0", UrlData[0].AsInt());
+    var game = db.QuerySingle("SELECT * FROM Games WHERE Id = @0", player.GameId);
+
+    Page.Title = player.Name;
+
+    GamePermission perm = Permissions.GetGamePermission(game);
+    
+    Permissions.RequireAtLeast(perm, GamePermission.Player);
+}
+<h2>@player.Name</h2>
+@if (String.IsNullOrEmpty(player.UserName))
+{
+    <h3>Non-Player Character</h3>
+}
+else
+{
+    <h3>Played by <a href="~/Users/Profile/@player.UserId">@player.UserName</a></h3>
+}
+<ul class="toolbar">
+@if (Permissions.IsAtLeast(perm, GamePermission.DM))
+{
+    string extraConfirm = null;
+    if (player.UserId == WebSecurity.CurrentUserId)
+    {
+        extraConfirm = " Since you are deleting yourself, you may also lose access to this game, so be REALLY sure!";
+    }
+    <li><a class="button confirm" href="~/Players/Delete/@player.Id" data-icon="circle-close" data-text="on" data-msg-confirm="Are you sure you want to delete @player.Name? This cannot be undone!@extraConfirm" title="Delete @player.Name">Delete</a></li>
+}
+</ul>

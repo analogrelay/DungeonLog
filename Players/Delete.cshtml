@@ -1,0 +1,29 @@
+﻿@{
+    if(!UrlData[0].IsInt()) {
+        Response.SetStatus(HttpStatusCode.NotFound);
+    }
+    
+    // Get the player and the game
+    var db = Database.Open("DungeonLog");
+    var player = db.QuerySingle("SELECT * FROM Players WHERE Id = @0", UrlData[0].AsInt());
+    if(player == null) {
+        Response.SetStatus(HttpStatusCode.NotFound);
+    }
+    var game = db.QuerySingle("SELECT * FROM Games WHERE Id = @0", player.GameId);
+    if(game == null) {
+        Response.SetStatus(HttpStatusCode.NotFound);
+    }
+    Permissions.RequireAtLeast(game, GamePermission.DM);
+    
+    // Delete the player!
+    db.Execute("DELETE FROM Players WHERE Id = @0", player.Id);
+    
+    // Re-verify game access if the player deleted was the current user (they may still be a DM or owner)
+    if(player.UserId == WebSecurity.CurrentUserId && !Permissions.IsAtLeast(game, GamePermission.Player)) {
+        // The user no longer has access to the game, so redirect to games list
+        Response.Redirect("~/Games");
+    }
+    
+    // Redirect to game
+    Response.Redirect("~/Games/Detail/" + game.Id);
+}

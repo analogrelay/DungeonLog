@@ -6,7 +6,7 @@ html {
 }
 
 body {
-    font-family: 'Segoe UI', Verdana, Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
@@ -96,6 +96,8 @@ ul.oauth_providerbar li {
     padding: 0;
 }
 
+/* Headers */
+
 h1 {
     font-family: 'MedievalSharp', cursive;
     font-size: 18pt;
@@ -109,6 +111,13 @@ section#header h1 a {
 h2 {
     font-size: 16pt;
     font-family: 'MedievalSharp', cursive;
+}
+
+h3 
+{
+    font-size: 12pt;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-weight: normal;
 }
 
 /* Forms */
@@ -133,4 +142,57 @@ input {
     border: solid black 1px;
     margin: 0.25em;
     padding: 0.25em;
+}
+
+ul.toolbar 
+{
+    margin: 0;
+    padding: 0;
+}
+
+ul.toolbar li 
+{
+    list-style-type: none;
+    display: inline;
+}
+
+.ui-button-text
+{
+    font-size: 10pt;
+}
+
+a.button 
+{
+    font-size: 8pt;
+}
+
+input[type='submit']
+{
+    font-size: 10pt;
+}
+
+a.largebutton
+{
+    font-size: 10pt;
+}
+
+a.iconbutton
+{
+    height: 24px;
+    width: 24px;
+}
+
+div.ui-dialog-titlebar
+{
+    font-size: 12pt;
+}
+
+div.dialog
+{
+    font-size: 10pt;
+}
+
+.message
+{
+    font-size: 8pt;
 }

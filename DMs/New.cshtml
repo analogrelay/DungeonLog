@@ -1,0 +1,39 @@
+﻿@{
+    if(!UrlData[0].IsInt()) {
+        Response.SetStatus(HttpStatusCode.NotFound);
+    }
+    
+    WebSecurity.RequireAuthenticatedUser();
+
+    Database db = Database.Open("DungeonLog");
+    var game = db.QuerySingle("SELECT * FROM Games WHERE Id = @0", UrlData[0].AsInt());
+    if(game == null) {
+        Response.SetStatus(HttpStatusCode.NotFound);
+    }
+    Permissions.RequireAtLeast(game, GamePermission.DM);
+    
+    string title = "Add a DM to " + game.Name;
+    Page.Title = title;
+    Validation.RequireField("username");
+
+    if(IsPost && Validation.IsValid()) {
+        // Get the user
+        var user = db.QuerySingle("SELECT * FROM Users WHERE Username = @0", Request.Form["username"]);
+        if(user == null) {
+            ModelState.AddError("username", "User does not exist");
+        } else {
+            // Add the DM
+            db.Execute("INSERT INTO DungeonMasters(GameId, Userid) VALUES(@0, @1)", game.Id, user.Id);
+            
+            // Redirect to the game's home page
+            Response.Redirect("~/Games/Detail/" + game.Id);
+        }
+    }
+}
+<h2>@title</h2>
+<form method="post">
+    <ul>
+        <li><span class="form_label">Username:</span> <input name="username" id="username" /> @Html.ValidationMessage("username")</li>
+        <li><input type="submit" name="submit" id="submit" value="Add DM" /></li>
+    </ul>
+</form>
